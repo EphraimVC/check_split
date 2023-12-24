@@ -146,21 +146,40 @@ function FormAddFriend({ onAddFriend }) {
 }
 
 function FormSplitBill({ selectedFriend }) {
+    const [bill, setBill] = useState("");
+    const [paidByUser, setPaidByUser] = useState("");
+    const friendBillPart = bill ? bill - paidByUser : " ";
+    const [billPayer, setBillPayer] = useState("user");
     return (
         <form className="form-split-bill">
             <h2>Split a bill with {selectedFriend.name}</h2>
             <label>💳 Bill value</label>
-            <input type="text" />
+            <input
+                type="text"
+                value={bill}
+                onChange={(e) => setBill(Number(e.target.value))}
+            />
             <label> 💵Your expense</label>
-            <input type="text" />
+            <input
+                type="text"
+                value={paidByUser}
+                onChange={(e) =>
+                    setPaidByUser(
+                        Number(e.target.value) > bill
+                            ? paidByUser
+                            : Number(e.target.value) //this ternary operation does that the user can input a value higher than the bill value
+                    )
+                }
+            />
             <label>😁 {selectedFriend.name}´s expense</label>
-            <input type="text" disabled />
+            <input type="text" disabled value={friendBillPart} />
             <label>🧾 Who is paying the bill ?</label>
-            <select>
+            <select
+                value={billPayer}
+                onChange={(e) => setBillPayer(e.target.value)}
+            >
                 <option value="user">You</option>
-                <option value={selectedFriend.name}>
-                    {selectedFriend.name}
-                </option>
+                <option value="friend">{selectedFriend.name}</option>
             </select>
             <Btn>Split bill</Btn>
         </form>
